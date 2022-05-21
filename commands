@@ -1,0 +1,127 @@
+Task 1:
+
+Part 1: Creating dimension and measure for calculating profit and total profit
+
+ 
+ 
+  dimension: profit {
+  label: "profit"
+  description: "sgggf"
+  type: number
+  sql: ${sale_price} - ${products.cost} ;;
+  value_format_name: usd
+}
+ 
+ measure: total_profit {
+  label: "total_profit"
+  description: "sgggf sum"
+  type: sum
+  sql: ${profit} ;;
+  value_format_name: usd
+}
+ 
+ 
+ 
+
+Part 2:
+ 
+Navigate to the training_ecommerce.model add below lines of code. (MAke sure to change the NAME_DATAGROUP)
+ 
+datagroup: NAME_DATAGROUP {
+max_cache_age: "168 hours"
+}
+ 
+persist_with: NAME_DATAGROUP
+ 
+ 
+ 
+Task 2:
+ 
+Start by copying the following code into the training_ecommerce.model file.
+(Make sure to change the NAME_DATAGROUP )
+ 
+
+explore: +order_items {
+      label: ""
+      aggregate_table: weekly_aggregate_revenue_profit {
+           query: {
+     dimensions: [order_items.created_date]
+          measures: [order_items.total_revenue, order_items.total_profit]
+        }
+        materialization: {
+             datagroup_trigger: NAME_DATAGROUP
+              increment_key: "created_date"
+    }
+}
+}
+
+ 
+Click on save > Validate LookMl and then Commit Changes and Push, then click Deploy to Production.
+
+ 
+Creating a visualization:
+ 
+From the Order Items  Explore, select Order Items > Created Date > Month, Total Revenue, and Total Profit. Make sure your Created Month column is in Ascending order
+Select a Line visualization. Click on run.
+Save the visualization as a look and give the name to the look as mentioned in the lab instruction page.
+ 
+ 
+ 
+Task 3:
+ 
+Create a new view file and give a name as mentioned in the lab instruction page.
+ 
+Remove all default code and add this code in the file by replacing the view file name with VIEW_NAME:
+ 
+ 
+view: VIEW_NAME {
+extension: required
+ 
+dimension: id {
+  primary_key: yes
+  type: number
+  sql: ${TABLE}.id ;;
+}
+ 
+dimension: email {
+  type: string
+  sql: ${TABLE}.email ;;
+}
+ 
+dimension: first_name {
+  type: string
+  sql: ${TABLE}.first_name ;;
+}
+ 
+dimension: last_name {
+  type: string
+  sql: ${TABLE}.last_name ;;
+}
+ 
+dimension: latitude {
+  type: number
+  sql: ${TABLE}.latitude ;;
+}
+ 
+dimension: longitude {
+  type: number
+  sql: ${TABLE}.longitude ;;
+}
+}
+ 
+ 
+Go back to the users.view file and then find the dimension name: first_name, last_name, email, id, latitude, and longitude
+
+Once you find the dimensions please add add below parameter under above  every dimension
+
+hidden: yes
+
+ 
+For example: 
+
+dimension: id {
+  primary_key: yes
+  type: number
+  hidden: yes
+  sql: ${TABLE}.id ;;
+}
